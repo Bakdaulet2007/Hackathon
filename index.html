@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Преподаватель: загрузка лекции</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; max-width: 600px; margin: auto; }
+    h1 { text-align: center; }
+    form { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+    #loader { display:none; }
+    .spinner {
+      border: 4px solid #f3f3f3; border-top: 4px solid #555;
+      border-radius: 50%; width: 18px; height: 18px;
+      animation: spin 1s linear infinite; display:inline-block; vertical-align:middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #result { margin-top:1rem; }
+    #result a { color: #0066cc; text-decoration: none; }
+    #result a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>Загрузка лекции</h1>
+  <form id="uploadForm">
+    <input type="file" name="file" accept=".pdf,.docx,.txt" required>
+    <button type="submit">Загрузить и сгенерировать</button>
+    <div id="loader"><span class="spinner"></span> Обработка…</div>
+  </form>
+  <div id="result"></div>
+
+  <script>
+    const form   = document.getElementById('uploadForm'),
+          loader = document.getElementById('loader'),
+          result = document.getElementById('result');
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      result.innerHTML = '';
+      loader.style.display = 'inline-block';
+
+      try {
+        const res  = await fetch('/upload', { method:'POST', body:new FormData(form) }),
+              html = await res.text();
+        result.innerHTML = html;
+      } catch(err) {
+        result.innerHTML = `<p style="color:red;">Ошибка: ${err.message}</p>`;
+      } finally {
+        loader.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
