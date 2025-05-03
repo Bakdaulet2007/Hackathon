@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Студент: лекции и конспекты</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; max-width: 700px; margin: auto; }
+    h1 { text-align: center; margin-bottom: 1.5rem; }
+    .lecture { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #ccc; }
+    .lecture h2 { margin-bottom: 0.5rem; }
+    .lecture a { display: inline-block; margin-right: 1rem; color: #0066cc; text-decoration: none; }
+    .lecture a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>Доступные лекции и конспекты</h1>
+
+  {% for lec in lectures %}
+    {% set base = lec.name.rsplit('.', 1)[0] %}
+    <div class="lecture">
+      <h2>{{ lec.name }}</h2>
+      <a href="{{ url_for('uploaded_file', filename=lec.name) }}">
+        Скачать лекцию ({{ lec.ext | upper }})
+      </a>
+      <a href="{{ url_for('uploaded_file', filename=base + '_summary.docx') }}">
+        Скачать конспект
+      </a>
+    </div>
+  {% endfor %}
+
+</body>
+</html>
